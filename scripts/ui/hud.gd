@@ -61,8 +61,8 @@ func update_countdown(text: String) -> void:
 		
 		# Crear un pequeño efecto de escala con Tween para que sea dinámico
 		var tween = create_tween()
-		countdown_label.scale = Vector3(1.5, 1.5, 1.5)
-		tween.tween_property(countdown_label, "scale", Vector3(1.0, 1.0, 1.0), 0.25).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+		countdown_label.scale = Vector2(1.5, 1.5)
+		tween.tween_property(countdown_label, "scale", Vector2(1.0, 1.0), 0.25).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 ## Oculta el panel de cuenta atrás.
 func hide_countdown() -> void:
