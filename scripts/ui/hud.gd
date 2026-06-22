@@ -2,7 +2,7 @@
 # Controla y actualiza los elementos visuales de la interfaz de usuario en tiempo real.
 extends CanvasLayer
 
-@onready var speed_label: Label = $HUDContainer/BottomRight/SpeedValue
+@onready var speed_label: Label = $HUDContainer/BottomRight/HBoxContainer/SpeedValue
 @onready var lap_label: Label = $HUDContainer/TopLeft/LapValue
 @onready var time_label: Label = $HUDContainer/TopRight/TimeValue
 @onready var pos_label: Label = $HUDContainer/TopLeft/PositionValue

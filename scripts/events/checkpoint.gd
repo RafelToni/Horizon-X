@@ -34,19 +34,17 @@ func _update_visuals() -> void:
 	if not is_inside_tree() or not mesh_indicator:
 		return
 		
+	# Solo hacer visible el checkpoint si es el siguiente objetivo activo del jugador
+	mesh_indicator.visible = is_active
+	
 	# Duplicar el material para evitar cambiar el de todas las instancias del disco
 	var mat = mesh_indicator.get_active_material(0)
 	if mat:
 		var new_mat = mat.duplicate() as StandardMaterial3D
 		if new_mat:
-			if is_active:
-				new_mat.albedo_color = active_color
-				new_mat.emission_enabled = true
-				new_mat.emission = active_color
-				new_mat.emission_energy_multiplier = 4.0 # Brillo intenso para guiar al jugador
-			else:
-				new_mat.albedo_color = inactive_color
-				new_mat.emission_enabled = true
-				new_mat.emission = inactive_color
-				new_mat.emission_energy_multiplier = 0.5 # Brillo tenue
+			new_mat.albedo_color = active_color
+			new_mat.emission_enabled = true
+			new_mat.emission = active_color
+			new_mat.emission_energy_multiplier = 4.0 # Brillo intenso para guiar al jugador
 			mesh_indicator.material_override = new_mat
+
