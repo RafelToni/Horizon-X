@@ -37,7 +37,8 @@ var player_state = {
 	"next_checkpoint_idx": 0,
 	"lap": 0,
 	"finished": false,
-	"finish_time": 0.0
+	"finish_time": 0.0,
+	"has_started": false
 }
 
 var ai_states = {} # Map: ai_node -> state_dict
@@ -69,7 +70,8 @@ func _ready() -> void:
 			"next_checkpoint_idx": 0,
 			"lap": 0,
 			"finished": false,
-			"finish_time": 0.0
+			"finish_time": 0.0,
+			"has_started": false
 		}
 	
 	# Iniciar el evento
@@ -80,6 +82,13 @@ func start_event() -> void:
 	race_time = 0.0
 	countdown_time = 3.0
 	
+	# Congelar físicamente los vehículos de la parrilla
+	if player_vehicle:
+		player_vehicle.process_mode = Node.PROCESS_MODE_DISABLED
+	for ai in ai_vehicles:
+		if ai:
+			ai.process_mode = Node.PROCESS_MODE_DISABLED
+			
 	# Bloquear controles
 	_set_controls_enabled(false)
 	
@@ -119,6 +128,14 @@ func _on_countdown_finished() -> void:
 	state = RaceState.RACING
 	if hud:
 		hud.hide_countdown()
+		
+	# Descongelar vehículos
+	if player_vehicle:
+		player_vehicle.process_mode = Node.PROCESS_MODE_INHERIT
+	for ai in ai_vehicles:
+		if ai:
+			ai.process_mode = Node.PROCESS_MODE_INHERIT
+			
 	_set_controls_enabled(true)
 
 # Activa o desactiva la ejecución física de los controladores para bloquear la entrada de mandos
@@ -147,20 +164,17 @@ func _on_checkpoint_passed(vehicle: Node3D, checkpoint: Checkpoint) -> void:
 		
 	# Comprobar si el checkpoint cruzado es el esperado secuencialmente
 	if checkpoint.checkpoint_id == current_state.next_checkpoint_idx:
-		# Avanzar el índice del siguiente checkpoint esperado
-		var total_chks = checkpoints.size()
-		
-		# Si cruzó el checkpoint final y vuelve a cruzar el primero (index 0), completa la vuelta
-		if current_state.next_checkpoint_idx == 0 and current_state.lap > 0:
-			# Ya se sumó el lap al cambiar al index 0 en la vuelta anterior, esto es consistente
-			pass
+		# Si es el primer checkpoint (salida) y el coche aún no ha comenzado oficialmente la carrera
+		if checkpoint.checkpoint_id == 0 and not current_state.has_started:
+			current_state.has_started = true
+			current_state.next_checkpoint_idx = 1
+		else:
+			# Avanzar el índice del siguiente checkpoint esperado de forma circular
+			var total_chks = checkpoints.size()
+			current_state.next_checkpoint_idx = (current_state.next_checkpoint_idx + 1) % total_chks
 			
-		current_state.next_checkpoint_idx = (current_state.next_checkpoint_idx + 1) % total_chks
-		
-		# Si ha vuelto a pasar el checkpoint 0 (es decir, completó una vuelta entera)
-		if current_state.next_checkpoint_idx == 1:
-			# Si ya había empezado la carrera (es decir, no es la salida inicial)
-			if current_state.lap > 0 or checkpoint.checkpoint_id == 0:
+			# Si vuelve al checkpoint 1 (es decir, ha pasado el 0 completando una vuelta)
+			if current_state.next_checkpoint_idx == 1:
 				current_state.lap += 1
 				
 				if is_player:

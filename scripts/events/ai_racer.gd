@@ -20,6 +20,8 @@ extends Node3D
 @export var steer_sensitivity: float = 2.5
 ## Dificultad (de 0.0 a 1.0). Reduce la velocidad máxima y el tiempo de reacción.
 @export var difficulty: float = 0.8
+## Si está activo, la IA conducirá en la dirección de offsets decrecientes del Path3D (marcha atrás en el circuito).
+@export var drive_backwards: bool = false
 
 # Estado interno
 var path_follower: PathFollow3D
@@ -63,9 +65,10 @@ func _physics_process(delta: float) -> void:
 	var closest_offset = curve.get_closest_offset(local_car_pos)
 	
 	# 2. Calcular la posición objetivo un poco más adelante en la trayectoria (Pure Pursuit)
+	var dir_mult = -1.0 if drive_backwards else 1.0
 	var speed_factor = vehicle_node.linear_velocity.length() * 0.25
 	var dynamic_look_ahead = look_ahead_distance + speed_factor
-	path_follower.progress = closest_offset + dynamic_look_ahead
+	path_follower.progress = closest_offset + (dynamic_look_ahead * dir_mult)
 	var target_pos = path_follower.global_position
 	
 	# 3. Calcular la dirección local hacia el objetivo
@@ -80,7 +83,7 @@ func _physics_process(delta: float) -> void:
 	
 	# 5. Ajustar velocidad en función de la curvatura de la pista
 	# Comprobar la dirección de un punto mucho más adelante (anticipación de curva)
-	path_follower.progress = closest_offset + dynamic_look_ahead * 2.5
+	path_follower.progress = closest_offset + (dynamic_look_ahead * 2.5 * dir_mult)
 	var far_target = path_follower.global_position
 	var local_far_target = vehicle_node.global_transform.affine_inverse() * far_target
 	var far_angle = abs(atan2(-local_far_target.x, -local_far_target.z))
