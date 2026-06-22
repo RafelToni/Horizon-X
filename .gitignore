@@ -1,0 +1,21 @@
+# Godot 4 Git ignore file
+
+# Godot-specific ignores
+.godot/
+*.translation
+*.tmp
+
+# Mono-specific ignores
+.mono/
+data_*/
+mono_project/
+.vs/
+.idea/
+
+# General ignores
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Builds
+builds/
