@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="EventData" load_steps=2 format=3 uid="uid://c83k1k2a7j0b5"]
+
+[ext_resource type="Script" path="res://scripts/events/event_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+event_name = "Mallorca Gateway Prototipo"
+event_type = 0
+laps = 2
+reward_credits = 7500
+reward_fans = 800

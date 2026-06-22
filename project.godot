@@ -15,7 +15,7 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 [application]
 
 config/name="horizon-x"
-run/main_scene="uid://d2xf4wuh2u4t6"
+run/main_scene="res://scenes/prototype_track.tscn"
 config/features=PackedStringArray("4.7")
 config/icon="res://icon.svg"
 
@@ -70,4 +70,9 @@ Clutch={
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":82,"physical_keycode":82,"key_label":0,"unicode":114,"echo":false,"script":null)
 ]
 }
+
+[autoload]
+
+PlayerProfile="*res://scripts/progression/player_profile.gd"
+
 

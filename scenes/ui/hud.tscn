@@ -1,0 +1,180 @@
+[gd_scene load_steps=2 format=3 uid="uid://cx6iwtw4v7xgy"]
+
+[ext_resource type="Script" path="res://scripts/ui/hud.gd" id="1_script"]
+
+[node name="HUD" type="CanvasLayer"]
+script = ExtResource("1_script")
+
+[node name="HUDContainer" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="TopLeft" type="VBoxContainer" parent="HUDContainer"]
+layout_mode = 0
+offset_left = 30.0
+offset_top = 30.0
+theme_override_constants/separation = 5
+
+[node name="PositionValue" type="Label" parent="HUDContainer/TopLeft"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.8, 1, 1)
+theme_override_font_sizes/font_size = 32
+text = "POS: 1 / 3"
+
+[node name="LapValue" type="Label" parent="HUDContainer/TopLeft"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "VUELTA: 1 / 3"
+
+[node name="TopRight" type="VBoxContainer" parent="HUDContainer"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -230.0
+offset_top = 30.0
+offset_right = -30.0
+offset_bottom = 75.0
+grow_horizontal = 0
+
+[node name="TimeValue" type="Label" parent="HUDContainer/TopRight"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.9, 0, 1)
+theme_override_font_sizes/font_size = 36
+text = "00:00.00"
+horizontal_alignment = 2
+
+[node name="BottomRight" type="VBoxContainer" parent="HUDContainer"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -250.0
+offset_top = -120.0
+offset_right = -30.0
+offset_bottom = -30.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HUDContainer/BottomRight"]
+layout_mode = 2
+alignment = 2
+
+[node name="SpeedValue" type="Label" parent="HUDContainer/BottomRight/HBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 64
+text = "0"
+horizontal_alignment = 2
+
+[node name="SpeedUnit" type="Label" parent="HUDContainer/BottomRight/HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 8
+theme_override_colors/font_color = Color(0, 0.8, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = " km/h"
+
+[node name="CountdownContainer" type="CenterContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="CountdownText" type="Label" parent="CountdownContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.3, 0, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.5)
+theme_override_constants/shadow_offset_x = 4
+theme_override_constants/shadow_offset_y = 4
+theme_override_font_sizes/font_size = 128
+text = "3"
+horizontal_alignment = 1
+
+[node name="NotificationContainer" type="CenterContainer" parent="."]
+visible = false
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -80.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="NotificationText" type="Label" parent="NotificationContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 1, 0.5, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 8
+theme_override_font_sizes/font_size = 48
+text = "¡VUELTA COMPLETADA!"
+horizontal_alignment = 1
+
+[node name="ResultsContainer" type="ColorRect" parent="."]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.784314)
+
+[node name="Panel" type="PanelContainer" parent="ResultsContainer"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -250.0
+offset_top = -200.0
+offset_right = 250.0
+offset_bottom = 200.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ResultsContainer/Panel"]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="Title" type="Label" parent="ResultsContainer/Panel/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.8, 0, 1)
+theme_override_font_sizes/font_size = 36
+text = "¡CARRERA FINALIZADA!"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="ResultsContainer/Panel/VBoxContainer"]
+layout_mode = 2
+
+[node name="PositionText" type="Label" parent="ResultsContainer/Panel/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Posición Final: 1º"
+horizontal_alignment = 1
+
+[node name="TimeText" type="Label" parent="ResultsContainer/Panel/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Tiempo Total: 01:23.45"
+horizontal_alignment = 1
+
+[node name="RewardsText" type="Label" parent="ResultsContainer/Panel/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.8, 1, 1)
+theme_override_font_sizes/font_size = 20
+text = "Recompensas:
++ 5000 Créditos
++ 500 Fans"
+horizontal_alignment = 1
