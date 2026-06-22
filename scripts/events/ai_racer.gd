@@ -22,9 +22,12 @@ extends Node3D
 @export var difficulty: float = 0.8
 ## Si está activo, la IA conducirá en la dirección de offsets decrecientes del Path3D (marcha atrás en el circuito).
 @export var drive_backwards: bool = false
+## Tiempo de reacción de salida de la IA (en segundos) para evitar salidas instantáneas "tramposas".
+@export var start_reaction_delay: float = 0.4
 
 # Estado interno
 var path_follower: PathFollow3D
+var time_since_start: float = 0.0
 var curve: Curve3D
 var last_safe_position: Vector3
 var last_safe_transform: Transform3D
@@ -56,6 +59,14 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	if not vehicle_node or not path_follower:
+		return
+		
+	# Simular tiempo de reacción de salida para la IA
+	if time_since_start < start_reaction_delay:
+		time_since_start += delta
+		vehicle_node.throttle_input = 0.0
+		vehicle_node.steering_input = 0.0
+		vehicle_node.brake_input = 1.0
 		return
 		
 	var car_pos = vehicle_node.global_position
