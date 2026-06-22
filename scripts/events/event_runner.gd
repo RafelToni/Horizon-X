@@ -17,10 +17,14 @@ enum RaceState { IDLE, COUNTDOWN, RACING, FINISHED }
 @export var player_vehicle: Node3D
 ## Controlador de entrada del jugador (para bloquearlo durante la cuenta atrás).
 @export var player_controller: Node
-## Lista de vehículos controlados por la IA.
-@export var ai_vehicles: Array[Node3D] = []
-## Lista de controladores de IA correspondientes.
-@export var ai_controllers: Array[Node] = []
+## Lista de vehículos controlados por la IA (definidos como NodePath).
+@export var ai_vehicles: Array[NodePath] = []
+## Lista de controladores de IA correspondientes (definidos como NodePath).
+@export var ai_controllers: Array[NodePath] = []
+
+# Nodos de IA resueltos dinámicamente en _ready()
+var ai_vehicle_nodes: Array[Node3D] = []
+var ai_controller_nodes: Array[Node] = []
 
 @export_category("Interfaz")
 ## Referencia al HUD del juego.
@@ -46,8 +50,19 @@ var player_position: int = 1
 var total_competitors: int = 1
 
 func _ready() -> void:
+	# Resolver NodePaths de vehículos y controladores de IA
+	for path in ai_vehicles:
+		var node = get_node_or_null(path) as Node3D
+		if node:
+			ai_vehicle_nodes.append(node)
+			
+	for path in ai_controllers:
+		var node = get_node_or_null(path)
+		if node:
+			ai_controller_nodes.append(node)
+			
 	# Inicializar competidores
-	total_competitors = 1 + ai_vehicles.size()
+	total_competitors = 1 + ai_vehicle_nodes.size()
 	
 	# Inicializar checkpoints del contenedor
 	if checkpoints_container:
@@ -65,7 +80,7 @@ func _ready() -> void:
 		checkpoints[0].is_active = true
 	
 	# Configurar estados iniciales de IA
-	for ai in ai_vehicles:
+	for ai in ai_vehicle_nodes:
 		ai_states[ai] = {
 			"next_checkpoint_idx": 0,
 			"lap": 0,
@@ -85,7 +100,7 @@ func start_event() -> void:
 	# Congelar físicamente los vehículos de la parrilla
 	if player_vehicle:
 		player_vehicle.process_mode = Node.PROCESS_MODE_DISABLED
-	for ai in ai_vehicles:
+	for ai in ai_vehicle_nodes:
 		if ai:
 			ai.process_mode = Node.PROCESS_MODE_DISABLED
 			
@@ -132,7 +147,7 @@ func _on_countdown_finished() -> void:
 	# Descongelar vehículos
 	if player_vehicle:
 		player_vehicle.process_mode = Node.PROCESS_MODE_INHERIT
-	for ai in ai_vehicles:
+	for ai in ai_vehicle_nodes:
 		if ai:
 			ai.process_mode = Node.PROCESS_MODE_INHERIT
 			
@@ -145,7 +160,7 @@ func _set_controls_enabled(enabled: bool) -> void:
 		if player_controller.has_method("set_process"):
 			player_controller.set_process(enabled)
 			
-	for ai_ctrl in ai_controllers:
+	for ai_ctrl in ai_controller_nodes:
 		if ai_ctrl:
 			ai_ctrl.set_physics_process(enabled)
 			if ai_ctrl.has_method("set_process"):
@@ -190,7 +205,7 @@ func _on_checkpoint_passed(vehicle: Node3D, checkpoint: Checkpoint) -> void:
 		
 		# Si es la IA, actualizar su posición de seguridad en su controlador para la prevención de atascos
 		if not is_player:
-			for ai_ctrl in ai_controllers:
+			for ai_ctrl in ai_controller_nodes:
 				if ai_ctrl and "vehicle_node" in ai_ctrl and ai_ctrl.vehicle_node == vehicle:
 					if ai_ctrl.has_method("update_safe_position"):
 						ai_ctrl.update_safe_position(checkpoint.global_position, checkpoint.global_transform.basis)
@@ -248,7 +263,7 @@ func _update_positions() -> void:
 	})
 	
 	# Añadir competidores de IA
-	for ai in ai_vehicles:
+	for ai in ai_vehicle_nodes:
 		var s = ai_states[ai]
 		list.append({
 			"node": ai,
